@@ -42,8 +42,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:rowCount="6"
-        tools:visibility="invisible">
+        app:rowCount="6">
 
         <ImageView
             android:id="@+id/imageView1"
