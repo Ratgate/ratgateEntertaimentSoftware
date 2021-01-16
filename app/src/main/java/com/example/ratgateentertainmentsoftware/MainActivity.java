@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
 //    android.widget.GridLayout gridLayout;
 //    GridLayout gridLayout;
 //    androidx.gridlayout.widget.GridLayout gridLayout = findViewById(R.id.gridLayout);
-    Integer[] cardsByOrder = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12};
+    Integer[] cardsByOrder = {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11};
 
-
+    Boolean shuffled;
     Boolean victorious;
     List<Integer> assignedCard;
     int[] gameState = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -69,14 +69,15 @@ public class MainActivity extends AppCompatActivity {
         imageViews.add(findViewById(R.id.imageView22));
         imageViews.add(findViewById(R.id.imageView23));
         imageViews.add(findViewById(R.id.imageView24));
-
+        shuffled = false;
 //        gridLayout.setVisibility(View.INVISIBLE);
     }
 
     public void shuffle(View view){
+        shuffled = true;
         Log.i("Postep", "kliknieto shuffle");
 //        gridLayout.setVisibility(View.VISIBLE);
-        Log.i("Postep", "Play w ogule odpalil");
+//        Log.i("Postep", "Widzialność dla gridLayout TRUE");
         victorious = false;
         toggledCard = false;
         Log.i("Postep", "ustalil wartosc zmiennych");
@@ -87,9 +88,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Postep", assignedCard.toString());
         Log.i("Postep", "Pomieszal tablice kart");
 
-        for (int state:gameState) {
-            state = 0;
-        }
+        gameState = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         Log.i("Postep", "wyzerowal stan gry");
 
 
@@ -99,55 +98,71 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Postep", "Odwrocil karty rewersami do gory");
     }
 
-    public void clicked(View view) throws InterruptedException {
-        ImageView clickedCard = (ImageView) view;
-        int clickedTag = Integer.parseInt(clickedCard.getTag().toString());
-        int previousTag = Integer.parseInt(previous.getTag().toString());
-        Log.i("Postep", "Kliknieto " + clickedCard.getTag().toString());
-
-//        String tempString;
-
-        //Sprawdz, czy kliklal w awers czy rewers
-        if(gameState[clickedTag-1]==0){
-            //obroc karte, zmien stan gry,
-
-//            tempString = "pic" + clickedTag;
-//            int resID = getResources().getIdentifier(tempString , "drawable", getPackageName());
-
-            clickedCard.setImageResource(heads[assignedCard.get(clickedTag-1)]);
-            gameState[clickedTag-1] = 1;
-
-            // sprawdz czy dobrze, zostaw jak tak, schowaj jak nie, kontynuuj jak nie ma do porownania
-            //Sprawdz,  czy jest to pierwsze klikniecie
-
-            if(toggledCard){
-                Thread.sleep(500);
-                //Sprawdz, czy para
-                if(assignedCard.get(previousTag - 1).equals(assignedCard.get(clickedTag - 1))){
-                    toggledCard = false;
-                    //Sprawdz, czy wygrałes
-                    victorious = true;
-                    for (int state:gameState) {
-                        if(state==0){
-                            victorious = false;
-                            break;
-                        }
-                    }
-                } else {
-                    gameState[previousTag - 1] = 0;
-                    gameState[clickedTag - 1] = 0;
-                    clickedCard.setImageResource(tail);
-                    previous.setImageResource(tail);
-                    }
-                toggledCard = false;
-            } else {
-                toggledCard = true;
-                previous = clickedCard;
-            }
+    public void panic(View view){
+        if(shuffled){
+            Log.i("PostPanika", "Panikujesz");
+            Log.i("PostPanika", "Gamestate: " + Arrays.toString(gameState));
+            Log.i("PostPanika", "Assigned Cards: " + assignedCard.toString());
+            Log.i("PostPanika", "Victorious: " + victorious.toString());
+            Log.i("PostPanika", "toggled card: " + toggledCard.toString());
+            Log.i("PostPanika", "Poprzedni: " + previous.getTag().toString());
+        } else {
+            Log.i("PostPanika", "Niepotasowany");
         }
-        //sprawdz, czy wygrałes
-        if(victorious){
-            Toast.makeText(this, "Congrats, You have won the game", Toast.LENGTH_LONG).show();
+
+    }
+
+
+    public void clicked(View view) throws InterruptedException {
+        if(shuffled){
+            ImageView clickedCard = (ImageView) view;
+            int clickedTag = Integer.parseInt(clickedCard.getTag().toString());
+            int previousTag = Integer.parseInt(previous.getTag().toString());
+            Log.i("Postep", "Kliknieto " + clickedCard.getTag().toString());
+            Log.i("Postep", "Poprzedni " + previous.getTag().toString());
+
+
+            //Sprawdz, czy kliklal w awers czy rewers
+            if(gameState[clickedTag-1]==0){
+                //obroc karte, zmien stan gry,
+
+                clickedCard.setImageResource(heads[assignedCard.get(clickedTag-1)]);
+                gameState[clickedTag-1] = 1;
+                Toast.makeText(this, "Yo, I be garbage", Toast.LENGTH_LONG).show();
+                // sprawdz czy dobrze, zostaw jak tak, schowaj jak nie, kontynuuj jak nie ma do porownania
+                //Sprawdz,  czy jest to pierwsze klikniecie
+
+                if(toggledCard){
+                    Thread.sleep(500);
+                    //Sprawdz, czy para
+                    if(assignedCard.get(previousTag - 1).equals(assignedCard.get(clickedTag - 1))){
+                        toggledCard = false;
+                        //Sprawdz, czy wygrałes
+                        victorious = true;
+                        for (int state:gameState) {
+                            if(state==0){
+                                victorious = false;
+                                break;
+                            }
+                        }
+                    } else {
+                        gameState[previousTag - 1] = 0;
+                        gameState[clickedTag - 1] = 0;
+                        clickedCard.setImageResource(tail);
+                        previous.setImageResource(tail);
+                    }
+                    toggledCard = false;
+                } else {
+                    toggledCard = true;
+                    previous = clickedCard;
+                }
+                //sprawdz, czy wygrałes
+                if(victorious){
+                    Toast.makeText(this, "Congrats, You have won the game", Toast.LENGTH_LONG).show();
+                }
+            }
+        } else {
+            Toast.makeText(this, "To play, You have to shuffle first", Toast.LENGTH_LONG).show();
         }
     }
 }
