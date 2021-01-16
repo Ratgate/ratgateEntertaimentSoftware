@@ -342,6 +342,7 @@
         android:layout_marginTop="48dp"
         android:onClick="panic"
         android:text="Panic!!!"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent" />

@@ -22,28 +22,19 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.pic7, R.drawable.pic8, R.drawable.pic9, R.drawable.pic10, R.drawable.pic11, R.drawable.pic12};
     int tail = R.drawable.pic00;
     ArrayList<ImageView> imageViews = new ArrayList<>();
-//    android.widget.GridLayout gridLayout;
-//    GridLayout gridLayout;
-//    androidx.gridlayout.widget.GridLayout gridLayout = findViewById(R.id.gridLayout);
     Integer[] cardsByOrder = {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11};
-
+    int[] gameState = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    List<Integer> assignedCard;
     Boolean shuffled;
     Boolean victorious;
-    List<Integer> assignedCard;
-    int[] gameState = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     Boolean toggledCard;
     ImageView previous;
-//    Button button;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        previous = findViewById(R.id.imageView1);
-
-
 
         imageViews.add(findViewById(R.id.imageView1));
         imageViews.add(findViewById(R.id.imageView2));
@@ -70,33 +61,31 @@ public class MainActivity extends AppCompatActivity {
         imageViews.add(findViewById(R.id.imageView23));
         imageViews.add(findViewById(R.id.imageView24));
         shuffled = false;
-//        gridLayout.setVisibility(View.INVISIBLE);
+        previous = findViewById(R.id.imageView1);
     }
+
 
     public void shuffle(View view){
         shuffled = true;
         Log.i("Postep", "kliknieto shuffle");
-//        gridLayout.setVisibility(View.VISIBLE);
-//        Log.i("Postep", "Widzialność dla gridLayout TRUE");
         victorious = false;
         toggledCard = false;
         Log.i("Postep", "ustalil wartosc zmiennych");
+
         //Wyzeroj stan gry, odwroc wszestkie karty rewersami do gory, przypisz nowe awersy do kart
         assignedCard = Arrays.asList(cardsByOrder);
         Log.i("Postep", assignedCard.toString());
         Collections.shuffle(assignedCard);
         Log.i("Postep", assignedCard.toString());
         Log.i("Postep", "Pomieszal tablice kart");
-
         gameState = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         Log.i("Postep", "wyzerowal stan gry");
-
-
         for (ImageView imageView: imageViews) {
             imageView.setImageResource(tail);
         }
         Log.i("Postep", "Odwrocil karty rewersami do gory");
     }
+
 
     public void panic(View view){
         if(shuffled){
@@ -109,11 +98,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.i("PostPanika", "Niepotasowany");
         }
-
     }
 
 
-    public void clicked(View view) throws InterruptedException {
+    public void clicked(View view) {
         if(shuffled){
             ImageView clickedCard = (ImageView) view;
             int clickedTag = Integer.parseInt(clickedCard.getTag().toString());
@@ -121,22 +109,24 @@ public class MainActivity extends AppCompatActivity {
             Log.i("Postep", "Kliknieto " + clickedCard.getTag().toString());
             Log.i("Postep", "Poprzedni " + previous.getTag().toString());
 
-
             //Sprawdz, czy kliklal w awers czy rewers
             if(gameState[clickedTag-1]==0){
-                //obroc karte, zmien stan gry,
 
+                //obroc karte, zmien stan gry,
                 clickedCard.setImageResource(heads[assignedCard.get(clickedTag-1)]);
+                clickedCard.animate().setDuration(400).rotation(360);
                 gameState[clickedTag-1] = 1;
-                Toast.makeText(this, "Yo, I be garbage", Toast.LENGTH_LONG).show();
+                Log.i("Postep", "Zmieniłem obrazek");
+
                 // sprawdz czy dobrze, zostaw jak tak, schowaj jak nie, kontynuuj jak nie ma do porownania
                 //Sprawdz,  czy jest to pierwsze klikniecie
 
                 if(toggledCard){
-                    Thread.sleep(500);
+
                     //Sprawdz, czy para
                     if(assignedCard.get(previousTag - 1).equals(assignedCard.get(clickedTag - 1))){
                         toggledCard = false;
+
                         //Sprawdz, czy wygrałes
                         victorious = true;
                         for (int state:gameState) {
@@ -148,6 +138,12 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         gameState[previousTag - 1] = 0;
                         gameState[clickedTag - 1] = 0;
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Log.i("Postep", "Zaczekałem chwilę");
                         clickedCard.setImageResource(tail);
                         previous.setImageResource(tail);
                     }
@@ -156,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     toggledCard = true;
                     previous = clickedCard;
                 }
+                
                 //sprawdz, czy wygrałes
                 if(victorious){
                     Toast.makeText(this, "Congrats, You have won the game", Toast.LENGTH_LONG).show();
